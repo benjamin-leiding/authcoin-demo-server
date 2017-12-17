@@ -19,21 +19,27 @@
             <form class="login-container">
                 <form>
                     <p>
-                        <input type="button" onClick="location.href='authcoin://'" class="bnt-primary" value="Log In Using Authcoin" />
+                        <input type="button" onClick="location.href='authcoin://data?serverUrl=authcoin-demo-server.cfapps.io&serverEir=TEST&appName=Authcoin Demo Bank'" class="bnt-primary" value="Log In Using Authcoin" />
+                        <input type="button" id="auth" onClick="location.href='authcoin://data?serverUrl=authcoin-demo-server.cfapps.io&serverEir=TEST&appName=Authcoin Demo Bank'" class="bnt-primary" value="Dynamic Link for Authenction (TEST)" />
                     </p>
-
-
                 </form>
             </form>
         </div>
     </div>
 </div>
 <script>
-        $("#registerButton").on( "click", function( event ) {
-            $("#submitButton").hide();
-            $("#registerButton").hide();
-            $("#cancelButton").show();
+    $(document).ready(function () {
+        $('#auth').click(function () {
+            /*var showData = $('#show-data');*/
+
+            $.getJSON('/registration', function (data) {
+                console.log(data);
+                var uri = "data?serverUrl=authcoin-demo-server.cfapps.io&serverEir="+data.serverEir+"&appName="+data.appName+"&sessionId="+data.id;
+                console.log(uri);
+                window.location.href = 'authcoin://'+uri;
+            });
         });
+    });
 </script>
 
 </body>

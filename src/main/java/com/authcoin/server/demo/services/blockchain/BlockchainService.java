@@ -1,4 +1,4 @@
-package com.authcoin.server.demo.blockchain;
+package com.authcoin.server.demo.services.blockchain;
 
 public interface BlockchainService {
 
