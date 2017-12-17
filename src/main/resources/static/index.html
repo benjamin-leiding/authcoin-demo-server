@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <meta charset="utf-8"/>
+    <title>Authcoin Demo Bank</title>
+    <script language="javascript" type="text/javascript" src="jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"/>
+    <link href="app.css" rel="stylesheet"/>
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="login">
+            <div class="login-triangle"></div>
+
+            <h2 class="login-header">Authcoin Demo Bank</h2>
+
+            <form class="login-container">
+                <form>
+                    <p>
+                        <input type="button" onClick="location.href='authcoin://'" class="bnt-primary" value="Log In Using Authcoin" />
+                    </p>
+
+
+                </form>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+        $("#registerButton").on( "click", function( event ) {
+            $("#submitButton").hide();
+            $("#registerButton").hide();
+            $("#cancelButton").show();
+        });
+</script>
+
+</body>
+</html>
