@@ -1,6 +1,7 @@
 package com.authcoin.server.demo.controllers.authentication;
 
 import com.authcoin.server.demo.services.blockchain.BlockchainService;
+import com.authcoin.server.demo.services.blockchain.contract.AuthcoinContractService;
 import com.authcoin.server.demo.services.session.SessionService;
 import com.authcoin.server.demo.services.session.AuthenticationSession;
 import com.authcoin.server.demo.exceptions.AuthenticationNotStartedException;
@@ -45,19 +46,18 @@ public class AuthenticationController {
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
     private final SessionService sessionService;
 
-    private BlockchainService blockchainService;
+    private final AuthcoinContractService authcoinContractService;
 
     @Autowired
-    public AuthenticationController(BlockchainService blockchainService, SessionService sessionService) {
-        this.blockchainService = blockchainService;
+    public AuthenticationController(AuthcoinContractService authcoinContractService, SessionService sessionService) {
         this.sessionService = sessionService;
-        logger.info("Server identity is {}", blockchainService.getServerEirId());
+        this.authcoinContractService = authcoinContractService;
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/registration")
     public ServerInfo serverInfo() {
         logger.info("Registration started ...");
-        ServerInfo serverInfo = new ServerInfo(UUID.randomUUID(), blockchainService.getServerEirId(), 1, APP_NAME);
+        ServerInfo serverInfo = new ServerInfo(UUID.randomUUID(), authcoinContractService.getEir().getEirId(), 1, APP_NAME);
         sessionService.start(serverInfo.getId(), new AuthenticationSession(serverInfo.getId()));
         return serverInfo;
     }

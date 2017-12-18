@@ -4,6 +4,7 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -20,6 +21,9 @@ sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
+	maven {
+		url "https://jitpack.io"
+	}
 }
 
 
@@ -28,4 +32,11 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	//testCompile('org.springframework.security:spring-security-test')
+	compile 'org.web3j:core-android:2.2.1'
+
+	compile 'com.google.code.gson:gson:2.7'
+	compile 'com.squareup.retrofit2:retrofit:2.3.0'
+	compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+	compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+	compile 'com.github.designsters:android-fork-bitcoinj:1.0.10'
 }
