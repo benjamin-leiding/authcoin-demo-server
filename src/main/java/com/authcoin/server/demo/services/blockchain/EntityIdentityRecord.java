@@ -51,20 +51,20 @@ public class EntityIdentityRecord {
         return publicKey;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
     public Address getAddress() {
         return address;
     }
 
-    public void setEirId(String eirId) {
-        this.eirId = eirId;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public String getEirId() {
         return eirId;
+    }
+
+    public void setEirId(String eirId) {
+        this.eirId = eirId;
     }
 
     public String getUnspentOutputs() {

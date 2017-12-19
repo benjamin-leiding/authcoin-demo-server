@@ -5,12 +5,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class SendRawTransactionResponse {
 
+    @SerializedName("txid")
+    public String txid;
     @SerializedName("result")
     @Expose
     private String result;
-
-    @SerializedName("txid")
-    public String txid;
 
     public String getResult() {
         return result;

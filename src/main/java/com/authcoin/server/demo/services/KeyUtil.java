@@ -6,7 +6,6 @@ import org.spongycastle.jce.spec.ECNamedCurveParameterSpec;
 
 import java.io.IOException;
 import java.security.*;
-import java.security.cert.CertificateException;
 
 public final class KeyUtil {
 

@@ -1,12 +1,11 @@
 package com.authcoin.server.demo.controllers.authentication;
 
-import com.authcoin.server.demo.services.blockchain.BlockchainService;
-import com.authcoin.server.demo.services.blockchain.contract.AuthcoinContractService;
-import com.authcoin.server.demo.services.session.SessionService;
-import com.authcoin.server.demo.services.session.AuthenticationSession;
 import com.authcoin.server.demo.exceptions.AuthenticationNotStartedException;
 import com.authcoin.server.demo.exceptions.ChallengeNotFoundException;
 import com.authcoin.server.demo.exceptions.InvalidInputException;
+import com.authcoin.server.demo.services.blockchain.contract.AuthcoinContractService;
+import com.authcoin.server.demo.services.session.AuthenticationSession;
+import com.authcoin.server.demo.services.session.SessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

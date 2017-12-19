@@ -1,4 +1,3 @@
-
 package com.authcoin.server.demo.services.blockchain.model;
 
 import com.google.gson.annotations.Expose;

@@ -1,8 +1,8 @@
 package com.authcoin.server.demo.services.blockchain.contract;
 
 import com.authcoin.server.demo.services.KeyUtil;
-import com.authcoin.server.demo.services.blockchain.EntityIdentityRecord;
 import com.authcoin.server.demo.services.blockchain.BlockChainService;
+import com.authcoin.server.demo.services.blockchain.EntityIdentityRecord;
 import com.authcoin.server.demo.services.blockchain.mapper.ContractUtil;
 import com.authcoin.server.demo.services.blockchain.mapper.RecordContractParamMapper;
 import com.authcoin.server.demo.services.blockchain.model.*;

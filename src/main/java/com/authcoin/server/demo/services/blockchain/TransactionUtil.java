@@ -47,7 +47,7 @@ public final class TransactionUtil {
      * Creates a new (bitcoin) transaction.
      */
     public static String createTransaction(Script script, List<UnspentOutput> unspentOutputs, List<DeterministicKey> keys, int gasLimit, int gasPrice, BigDecimal feePerKb, BigDecimal fee) {
-        if(unspentOutputs.size() == 0) {
+        if (unspentOutputs.size() == 0) {
             throw new InsufficientFundsException("Insufficient funds");
         }
         // script output
