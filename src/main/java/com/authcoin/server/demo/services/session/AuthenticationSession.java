@@ -19,6 +19,7 @@ public class AuthenticationSession {
     private ChallengeSignatureRecord receivedSignatureRecord;
 
     private String txId;
+    private byte[] token;
 
     public AuthenticationSession(UUID id) {
         this.id = id;
@@ -95,5 +96,13 @@ public class AuthenticationSession {
 
     public void setReceivedSignatureRecord(ChallengeSignatureRecord receivedSignatureRecord) {
         this.receivedSignatureRecord = receivedSignatureRecord;
+    }
+
+    public void setToken(byte[] token) {
+        this.token = token;
+    }
+
+    public byte[] getToken() {
+        return token;
     }
 }

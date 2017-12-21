@@ -2,8 +2,10 @@
 <html ng-app="app">
 <head>
     <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authcoin Demo Bank</title>
     <script language="javascript" type="text/javascript" src="jquery-3.2.1.min.js"></script>
+    <script language="javascript" type="text/javascript" src="js.cookie-2.2.0.min.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"/>
     <link href="app.css" rel="stylesheet"/>
 
@@ -17,9 +19,13 @@
             <h2 class="login-header">Authcoin Demo Bank</h2>
 
             <form class="login-container">
+                <div class="text-center" id="lcontainer">
+                </div>
                 <form>
                     <p>
                         <input type="button" id="auth" class="bnt-primary" value="Log In Using Authcoin"/>
+                        <input type="button" id="cancel" style="display: none;" class="bnt-primary" value="Cancel Login"/>
+
                     </p>
                 </form>
             </form>
@@ -27,16 +33,94 @@
     </div>
 </div>
 <script>
+
+    $(window).focus(function() {
+        console.log("focus");
+        location.reload();
+       // init();
+    });
+
     $(document).ready(function () {
-        $('#auth').click(function () {
+        init();
+        $('#cancel').click(function () {
             $.getJSON('/registration', function (data) {
-                console.log(data);
-                var uri = "data?serverUrl=authcoin-demo-server.cfapps.io&serverEir=" + data.serverEir + "&appName=" + data.appName + "&sessionId=" + data.id;
-                console.log(uri);
-                window.location.href = 'authcoin://' + uri;
+                Cookies.remove("authcoin_bank_id");
+                location.reload();
             });
         });
     });
+
+    function init() {
+        var v = Cookies.get("authcoin_bank_id");
+        console.log(v);
+        if (!$.trim(v)) {
+            $('#cancel').hide();
+            $('#auth').click(function () {
+                $.getJSON('/registration', function (data) {
+                    console.log(data);
+                    var uri = "data?serverUrl=http%3A%2F%2Fauthcoin-demo-server.cfapps.io&serverEir=" + data.serverEir + "&appName=" + data.appName + "&sessionId=" + data.id;
+                    console.log(uri);
+                    Cookies.set("authcoin_bank_id", data.id);
+                    $('#auth').hide();
+                    $('#cancel').show();
+
+                    setInterval(function() {
+                        poll(data.id);
+                    }, 1500);
+                    window.location.href = 'authcoin://' + uri;
+                });
+            });
+        } else {
+            console.log("Not here");
+            $('#auth').hide();
+            $('#cancel').show();
+            poll(v);
+        }
+    }
+
+
+    function poll(id) {
+        $.getJSON('/registration/' + id + '/status', function (data) {
+            console.log(data.token);
+            if (!$.trim(data.token)) {
+                console.log("Not authenticated...")
+            } else {
+                getSecretContent(id, data.token);
+                console.log("Authenticated")
+            }
+        }).fail(function () {
+            console.log("poll failed");
+        });
+    }
+
+    function getSecretContent(id, token) {
+        $(document).ready(function () {
+            $.ajax({
+                url: '/secret',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $("#lcontainer").html('<div class="text-center">' + data.content + '</div>');
+                    $('#auth').hide();
+                    $('#cancel').show();
+                    $('#cancel').val("Logout");
+
+                },
+                error: function () {
+                    console.log("getting secret failed");
+                },
+                beforeSend: function (xhr) {
+                    setHeader(xhr, id, token);
+                }
+            });
+        });
+    }
+
+    function setHeader(xhr, id, token) {
+        xhr.setRequestHeader('Authorization', id + ' ' + token);
+    }
+
+
 </script>
 
 </body>

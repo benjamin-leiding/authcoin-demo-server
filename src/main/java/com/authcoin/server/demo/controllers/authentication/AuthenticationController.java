@@ -3,16 +3,18 @@ package com.authcoin.server.demo.controllers.authentication;
 import com.authcoin.server.demo.exceptions.AuthenticationNotStartedException;
 import com.authcoin.server.demo.exceptions.ChallengeNotFoundException;
 import com.authcoin.server.demo.exceptions.InvalidInputException;
+import com.authcoin.server.demo.services.KeyUtil;
 import com.authcoin.server.demo.services.blockchain.contract.AuthcoinContractService;
 import com.authcoin.server.demo.services.session.AuthenticationSession;
 import com.authcoin.server.demo.services.session.SessionService;
+import com.authcoin.server.demo.services.session.StatusEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.ByteBuffer;
-import java.security.SecureRandom;
+import java.security.*;
 import java.util.UUID;
 
 /**
@@ -86,7 +88,7 @@ public class AuthenticationController {
     @RequestMapping(method = RequestMethod.POST, path = "/registration/{registrationId}/response")
     public ChallengeResponseRecord responseRecord(
             @PathVariable("registrationId") UUID registrationId,
-            @RequestBody ChallengeResponseRecord input) {
+            @RequestBody ChallengeResponseRecord input) throws Exception {
         logger.info("got challenge response from client with registration id {}", registrationId);
         AuthenticationSession state = validateInput(registrationId, input);
         ChallengeRecord myChallengeRecord = state.getReceivedChallengeRecord();
@@ -94,8 +96,9 @@ public class AuthenticationController {
             throw new ChallengeNotFoundException();
         }
         state.setReceivedResponseRecord(input);
-        // TODO Fulfill challenge. Sign content of myChallengeRecord.
-        byte[] response = new byte[128];
+
+        byte[] response = sign(myChallengeRecord.getChallenge());
+
         ChallengeResponseRecord serverResponse = new ChallengeResponseRecord(
                 myChallengeRecord.getId(),
                 myChallengeRecord.getVaeId(),
@@ -144,13 +147,21 @@ public class AuthenticationController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/registration/{registrationId}/status", produces = "application/json")
-    public Status status(@PathVariable("registrationId") UUID registrationId) {
+    public Status status(@PathVariable("registrationId") UUID registrationId) throws Exception {
         logger.info("status request for registration with id {}", registrationId);
         AuthenticationSession authenticationSession = sessionService.get(registrationId);
         if (authenticationSession == null) {
-            return new Status("NOT_STARTED");
+            return new Status("NOT_STARTED", null);
         }
-        return new Status(authenticationSession.getStatus().name());
+        StatusEnum status = authenticationSession.getStatus();
+        // TODO shouldn't be handled like this!!
+        byte[] token = null;
+        if (StatusEnum.CHALLENGE_RESPONSES_EXCHANGED.equals(status)) {
+            byte[] challenge = generateChallenge();
+            token = sign(challenge);
+            authenticationSession.setToken(token);
+        }
+        return new Status(status.name(), token);
     }
 
     private byte[] generateId() {
@@ -176,6 +187,14 @@ public class AuthenticationController {
             throw new AuthenticationNotStartedException();
         }
         return state;
+    }
+
+    private byte[] sign(byte[] challenge) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+        Signature signature = Signature.getInstance("SHA256withECDSA");
+        PrivateKey aPrivate = KeyUtil.loadKeyPair().getPrivate();
+        signature.initSign(aPrivate);
+        signature.update(challenge);
+        return signature.sign();
     }
 
 }
